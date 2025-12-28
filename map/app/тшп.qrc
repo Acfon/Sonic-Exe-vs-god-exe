@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="fdg">
+    <file>i.webp</file>
+  </qresource>
+  <qresource/>
+</RCC>
