@@ -16,7 +16,7 @@ ACCSELERATION = 0.1
 MOVE = 0
 class MyGame(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Аркадный Бегун")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Аркадный Пердун")
         arcade.set_background_color(arcade.color.BLUE)
 
         # Спрайт игрока
@@ -68,12 +68,13 @@ class MyGame(arcade.Window):
         self.jump_buffer_timer = 0.0
         self.time_since_ground = 999.0
         self.uimanager = arcade.gui.UIManager()
-        message_box = UILabel(
+        self.hiding = False
+        self.message_box = UILabel(
             width=400,
             height=SCREEN_HEIGHT,
-            text="time:"
+            text="time: 10:00"
         )
-        self.uimanager.add(message_box)
+        self.uimanager.add(self.message_box)
         self.jumps_left = MAX_JUMPS
         self.engine = arcade.PhysicsEnginePlatformer(
             player_sprite=self.player,
@@ -91,6 +92,7 @@ class MyGame(arcade.Window):
         self.time_since_ground = 999.0
         self.jumps_left = MAX_JUMPS
         self.uimanager.enable()
+
 
     def on_draw(self):
         self.clear()
@@ -124,7 +126,10 @@ class MyGame(arcade.Window):
                 self.stopl = False
 
         if arcade.check_for_collision_with_list(self.player, self.hide):
-            print("YES")
+            self.hiding = True
+        else:
+            self.hiding = False
+        self.message_box.text = self.hiding
 
         if arcade.check_for_collision_with_list(self.player, self.death):
             self.player.center_x, self.player.center_y = self.spawn_point
