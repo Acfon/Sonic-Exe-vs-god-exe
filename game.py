@@ -36,6 +36,8 @@ class MyGame(arcade.Window):
         self.invis = self.tile_map.sprite_lists["invisible"]
         self.plat = self.tile_map.sprite_lists["platforms"]
         self.death = self.tile_map.sprite_lists["die"]
+        self.hide = self.tile_map.sprite_lists["hide"]
+        self.touch = self.tile_map.sprite_lists["touch"]
         self.walk_right = []
         self.walk_left = []
         self.last_move = 1
@@ -87,6 +89,7 @@ class MyGame(arcade.Window):
         self.ground.draw()
         self.world_camera.use()
         self.plat.draw()
+        self.hide.draw()
 
 
     def on_update(self, dt: float):
@@ -109,6 +112,15 @@ class MyGame(arcade.Window):
             if MOVE > 0:
                 MOVE = 0
                 self.stopl = False
+
+        if arcade.check_for_collision_with_list(self.player, self.hide):
+            print("YES")
+
+        if arcade.check_for_collision_with_list(self.player, self.death):
+            self.player.center_x, self.player.center_y = self.spawn_point
+            self.player.change_x = self.player.change_y = 0
+            self.time_since_ground = 999
+            self.jumps_left = MAX_JUMPS
 
         if self.is_walkingr or self.is_walkingl:
             self.texture_change_time += 0.039

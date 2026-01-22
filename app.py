@@ -1,5 +1,5 @@
 import sys
-
+import time
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
@@ -20,8 +20,9 @@ class MyWidget(QMainWindow):
         b = self.text.text()
         self.pushButton.clicked.connect(self.run)
         if b.lower() == "hello" and self.stage == 0:
+            a = "Hi, my child! Nice to hear you!"
+            self.otvet.setText(a)
             self.stage += 1
-            self.otvet.setText("Hi, my child! Nice to hear you!")
             self.note.setText("say: 'Who are you?'")
         elif b.lower() == "who are you?" and self.stage == 1:
             self.stage += 1
