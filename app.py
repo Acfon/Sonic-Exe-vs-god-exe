@@ -37,6 +37,14 @@ class MyWidget(QMainWindow):
             self.otvet.setText("I'll show you later")
             self.note.setText("say: 'What do you do?'")
 
+    def mousePressEvent(self, event):
+        self.oldPos = event.globalPosition()
+
+    def mouseMoveEvent(self, event):
+        delta = event.globalPosition() - self.oldPos
+        self.move(1, 1)
+        self.oldPos = event.globalPosition()
+
 
 
 
