@@ -1,5 +1,6 @@
 import arcade
 from pyglet.graphics import Batch
+from arcade.gui import UIManager, UIMessageBox, UILabel
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -15,7 +16,7 @@ ACCSELERATION = 0.1
 MOVE = 0
 class MyGame(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Аркадный Бегун", fullscreen=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Аркадный Бегун")
         arcade.set_background_color(arcade.color.BLUE)
 
         # Спрайт игрока
@@ -66,6 +67,13 @@ class MyGame(arcade.Window):
         self.left = self.right = self.up = self.down = self.jump_pressed = self.stopl = self.stopr = False
         self.jump_buffer_timer = 0.0
         self.time_since_ground = 999.0
+        self.uimanager = arcade.gui.UIManager()
+        message_box = UILabel(
+            width=400,
+            height=SCREEN_HEIGHT,
+            text="time:"
+        )
+        self.uimanager.add(message_box)
         self.jumps_left = MAX_JUMPS
         self.engine = arcade.PhysicsEnginePlatformer(
             player_sprite=self.player,
@@ -82,6 +90,7 @@ class MyGame(arcade.Window):
         self.jump_buffer_timer = 0
         self.time_since_ground = 999.0
         self.jumps_left = MAX_JUMPS
+        self.uimanager.enable()
 
     def on_draw(self):
         self.clear()
@@ -90,6 +99,7 @@ class MyGame(arcade.Window):
         self.world_camera.use()
         self.plat.draw()
         self.hide.draw()
+        self.uimanager.draw()
 
 
     def on_update(self, dt: float):
