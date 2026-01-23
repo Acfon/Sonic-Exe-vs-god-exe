@@ -1,6 +1,7 @@
 import arcade
 from pyglet.graphics import Batch
-from arcade.gui import UIManager, UIMessageBox, UILabel
+from arcade.gui import UIManager, UILabel
+
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -39,6 +40,7 @@ class MyGame(arcade.Window):
         self.death = self.tile_map.sprite_lists["die"]
         self.hide = self.tile_map.sprite_lists["hide"]
         self.touch = self.tile_map.sprite_lists["touch"]
+        self.timer = self.tile_map.sprite_lists["timer"]
         self.walk_right = []
         self.walk_left = []
         self.last_move = 1
@@ -69,10 +71,11 @@ class MyGame(arcade.Window):
         self.time_since_ground = 999.0
         self.uimanager = arcade.gui.UIManager()
         self.hiding = False
+        self.textTimer = 7
         self.message_box = UILabel(
             width=400,
             height=SCREEN_HEIGHT,
-            text="time: 10:00"
+            text="time: 7"
         )
         self.uimanager.add(self.message_box)
         self.jumps_left = MAX_JUMPS
@@ -82,6 +85,7 @@ class MyGame(arcade.Window):
             walls=(self.ground, self.plat)
         )
         self.batch = Batch()
+        self.startTimer = False
         self.text_info = arcade.Text("WASD/стрелки — ходьба/лестницы • SPACE — прыжок",
                                      16, 16, arcade.color.GRAY, 14, batch=self.batch)
 
@@ -125,11 +129,25 @@ class MyGame(arcade.Window):
                 MOVE = 0
                 self.stopl = False
 
+        if arcade.check_for_collision_with_list(self.player, self.timer):
+            self.startTimer = True
         if arcade.check_for_collision_with_list(self.player, self.hide):
             self.hiding = True
         else:
             self.hiding = False
-        self.message_box.text = self.hiding
+        if self.startTimer:
+            self.textTimer -= dt
+            self.message_box.text = f"HIDE: {int(self.textTimer)}"
+        if self.textTimer < 1:
+            if self.hiding:
+                self.textTimer = 7
+            else:
+                pass
+
+
+
+
+
 
         if arcade.check_for_collision_with_list(self.player, self.death):
             self.player.center_x, self.player.center_y = self.spawn_point
@@ -200,8 +218,8 @@ class MyGame(arcade.Window):
 
         half_w = self.world_camera.viewport_width / 2
         half_h = self.world_camera.viewport_height / 2
-        world_w = 10000
-        world_h = 900
+        world_w = 20000
+        world_h = 2000
         cam_x = max(half_w, min(world_w - half_w, smooth[0]))
         cam_y = max(half_h, min(world_h - half_h, smooth[1]))
 
