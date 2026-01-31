@@ -1,37 +1,32 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from PyQt6.QtMultimedia import QMediaPlayer
-from PyQt6.QtMultimediaWidgets import QVideoWidget
-from PyQt6.QtCore import QUrl, Qt
-from random import randint
+import tkinter as tk
+from tkvideo import tkvideo
 import threading
-import sys
+import random
+
+root = tk.Tk()
+root.resizable(False, False)
+root.withdraw()
+
+def closed():
+    root.quit()
 
 
-class VideoPlayer(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
-        self.setStyleSheet("background-color: rgba(0, 0, 0, 100)")
-        self.setWindowTitle("Video Player")
-        self.setGeometry(600, 400, 600, 400)
-        self.media_player = QMediaPlayer()
-        self.video_widget = QVideoWidget()
-        self.media_player.setVideoOutput(self.video_widget)
-        self.media_player.setSource(QUrl.fromLocalFile("sprites/video/eyes.mp4"))
-        layout = QVBoxLayout()
-        layout.addWidget(self.video_widget)
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
-        self.media_player.play()
-        threading.Timer(5,  self.close).start()
+def window():
+    root2 = tk.Toplevel()
+    lbl = tk.Label(root2)
+    player = tkvideo("sprites/video/eyes.mp4", lbl, loop=1)
+    player.play()
+    lbl.pack()
+    root2.wm_attributes('-transparentcolor', 'black')
+    root2.resizable(False, False)
+    w1_x, w1_y = random.randint(0, root2.winfo_screenwidth() - 600), \
+        random.randint(0, root2.winfo_screenheight() - 400)
+    root2.geometry(f"+{w1_x}+{w1_y}")
+    threading.Timer(1, closed).start()
+    root2.mainloop()
 
-    def closed(self):
-        self.close()
 
-def main():
-    app = QApplication(sys.argv)
-    video_player = VideoPlayer()
-    video_player.show()
-    video_player.move(randint(0, 1920), randint(0, 1080))
-    sys.exit(app.exec())
+for i in range(10):
+    window()
+threading.Timer(4, closed).start()
+root.mainloop()
